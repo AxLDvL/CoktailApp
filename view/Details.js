@@ -52,10 +52,10 @@ export default function DetailsScreen({route }) {
     },[])
     const renderRecipe = ({item})=>{
         return(
-            <>
-                <Text>{item.ingredient}</Text>
-                <Text>{item.quantity}</Text>
-            </>
+                <View style={styles.list}>
+                    <Text style={styles.ingredient}>{item.ingredient}</Text>
+                    <Text style={styles.quantity}>{item.quantity}</Text>
+                </View>
         )
     }
 if(coktailDetail.propertyIsEnumerable('name')){
@@ -68,8 +68,10 @@ if(coktailDetail.propertyIsEnumerable('name')){
             />
             <Text style={styles.title2}>Instructions</Text>
             <Text style={styles.paragraphe}>{coktailDetail.instructions}</Text>
+            <Text style={styles.title2}>Les ingrédients</Text>
 
            <FlatList
+               style={styles.flatlist}
                 data={coktailDetail?.recipe}
                 renderItem = {renderRecipe}
             />
@@ -89,17 +91,17 @@ const styles = StyleSheet.create({
     },
     title: {
         flexWrap:"wrap",
-        fontSize: 18,
+        fontSize: 24,
         padding:5,
-        marginVertical:10,
+        marginVertical:5,
         alignSelf:"center",
-        color:"darkgrey"
+        color:"#333333"
     },
     title2:{
-        fontSize: 14,
-        marginVertical:10,
+        fontSize: 20,
+        marginVertical:5,
         alignSelf:"center",
-        color:"darkgrey"
+        color:"#4D4D4D"
     },
     image:{
         alignSelf:"center",
@@ -108,8 +110,30 @@ const styles = StyleSheet.create({
         margin:10
     },
     paragraphe:{
-        fontSize:12,
+        fontSize:16,
         textAlign:"left",
+        margin:10,
+        color:"#4D4D4D"
+    },
 
+    list:{
+        flex:1,
+        flexDirection:"row",
+        marginLeft:20,
+        color:"#4D4D4D",
+        marginVertical:2,
+        columnGap:20,
+
+    },
+    ingredient:{
+
+        fontSize:16,
+        fontWeight:"600",
+        color:"#4D4D4D",
+        marginLeft:20
+    },
+    quantity:{
+
+        color:"#4D4D4D"
     }
 });
