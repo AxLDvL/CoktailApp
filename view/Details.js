@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {View, Text, Image, StyleSheet, StatusBar,FlatList} from 'react-native';
 import {useEffect, useState} from "react";
+import {useSelector} from "react-redux";
 
 
 
@@ -8,12 +9,13 @@ export default function DetailsScreen({route }) {
     const { idDrink } = route.params;
     const [coktailDetail, setCoktailDetail] = useState({});
 
+    const favorites = useSelector((state) => state.favoriteCok);
+
     useEffect(()=>{
         try{
             const coktail= (async () => {
                 const response = await fetch (`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${idDrink}`);
-                const data = await response.json();
-
+                const data = await response.json()
                 console.log("data",data.drinks[0]);
 
                 //je convertie l'objet coktail en

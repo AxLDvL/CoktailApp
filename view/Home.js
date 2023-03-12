@@ -10,11 +10,16 @@ import {
 import { useEffect, useState} from "react";
 import ShowCoktailImage from "../components/ShowCoktailImage";
 import Ionicons from '@expo/vector-icons/Ionicons';
+import {useDispatch, useSelector} from "react-redux";
+import {createFavorite, deleteFavorite} from "../redux";
 
 const HomeScreen = ({ navigation }) => {
-    const [favoriteCoktails,setFavoriteCoktails] = useState([])
     const [coktailList, setCoktailList] = useState([])
     const [selectedId, setSelectedId] = useState("");
+
+    const favorites = useSelector((state) => state.favoriteCok);
+
+    const dispatch = useDispatch();
 
     useEffect(()=>{
         try{
@@ -31,7 +36,7 @@ const HomeScreen = ({ navigation }) => {
     },[])
 
     const isFavorite = (item) => {
-        return favoriteCoktails.some(e => e.idDrink === item.idDrink);
+        return favorites.some(e => e.idDrink === item.idDrink);
     }
     const renderItem = ({item}) => {
         const backgroundColor = item.idDrink === selectedId ? 'white' : 'white';
@@ -51,14 +56,14 @@ const HomeScreen = ({ navigation }) => {
                 <View style={{flexDirection:"row-reverse"}}>
                     <TouchableOpacity
                         onPress={() => {
-                            let index = favoriteCoktails.findIndex(e=> e.idDrink == item.idDrink);
+
+                            let index = favorites.findIndex((e)=>{return  e.idDrink == item.idDrink});
+
                             if(index === -1){
-                                setFavoriteCoktails((cok) => [...cok,item])
-                            }else{
-                                let favCok = favoriteCoktails.filter(e => e.idDrink !== item.idDrink);
-                                setFavoriteCoktails(favCok);
+                                dispatch(createFavorite(item))
+                            } else{
+                                dispatch(deleteFavorite(item.idDrink))
                             }
-                            console.log("favoriteCoktails",favoriteCoktails)
                             }}
                         style={[styles.item, {backgroundColor:'transparent'}]}
                     >
@@ -80,13 +85,15 @@ const HomeScreen = ({ navigation }) => {
                         data={coktailList}
                         renderItem={renderItem}
                         keyExtractor={item => item.idDrink}
-                        extraData={[selectedId, favoriteCoktails]}
+                        extraData={[selectedId, favorites]}
                         numColumns={2}
                     />
             </SafeAreaView>
         </View>
     );
 }
+
+
 
 const styles = StyleSheet.create({
     container: {
