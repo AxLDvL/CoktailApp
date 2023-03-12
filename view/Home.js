@@ -18,7 +18,8 @@ const HomeScreen = ({ navigation }) => {
     const [coktailList, setCoktailList] = useState([])
     const [selectedId, setSelectedId] = useState("");
     const [itemsPerPage, setItemsPerPage] = useState(20);
-    const [searchPhrase, setSearchPhrase] = useState('')
+    const [searchPhrase, setSearchPhrase] = useState('');
+    const [dataRendering,setDataRendering] = useState([])
 
     const favorites = useSelector((state) => state.favoriteCok);
 
@@ -38,10 +39,31 @@ const HomeScreen = ({ navigation }) => {
         }catch(e){
             console.error(e)
         }
-        console.log(coktailList);
+        console.log("coktailList",coktailList);
+        console.log("bool",Boolean(undefined))
     },[])
 
-
+    useEffect(()=>{
+        let datas;
+        //fonction qui renvoie des datas en fonction du texte recherché
+        const datarendering = () => {
+            let searchText = searchPhrase.toLowerCase();
+            if(searchText !==""){
+                datas = coktailList.filter((e) => {
+                   let str =  e.idDrink.concat(e.strDrink).toLowerCase();
+                   const regex = new RegExp('\w*'+searchText+'\w*','g')
+                    return regex.test(str)//Object.values(e).includes(searchPhrase)
+                });
+                console.log("datas",datas);
+                setDataRendering(datas)
+            }else {
+                datas = coktailList.slice(0, itemsPerPage);
+                setDataRendering(datas)
+            }
+        }
+        datarendering();
+        console.log(dataRendering)
+    },[itemsPerPage,searchPhrase,coktailList])
 
     const isFavorite = (item) => {
         return favorites.some(e => e.idDrink === item.idDrink);
@@ -93,7 +115,7 @@ const HomeScreen = ({ navigation }) => {
                 setSearchPhrase={setSearchPhrase}/>
             <SafeAreaView style={styles.container}>
                     <FlatList
-                        data={coktailList.slice(0, itemsPerPage)}
+                        data={dataRendering}
                         renderItem={renderItem}
                         keyExtractor={item => item.idDrink}
                         extraData={[selectedId, favorites]}
@@ -101,7 +123,7 @@ const HomeScreen = ({ navigation }) => {
                         onEndReached={() => {
                             setItemsPerPage(itemsPerPage + 20);
                         }}
-                        onEndReachedThreshold={5}
+                        onEndReachedThreshold={3}
                     />
             </SafeAreaView>
         </View>
