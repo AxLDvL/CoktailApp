@@ -14,12 +14,13 @@ import {useDispatch, useSelector} from "react-redux";
 import {createFavorite, deleteFavorite} from "../redux";
 import SearchBar from "../components/SearchBar";
 
-const HomeScreen = ({ navigation }) => {
+
+const HomeScreen = ({ navigation}) => {
     const [coktailList, setCoktailList] = useState([])
     const [selectedId, setSelectedId] = useState("");
     const [itemsPerPage, setItemsPerPage] = useState(20);
     const [searchPhrase, setSearchPhrase] = useState('');
-    const [dataRendering,setDataRendering] = useState([])
+    const [dataRendering,setDataRendering] = useState([]);
 
     const favorites = useSelector((state) => state.favoriteCok);
 
@@ -27,10 +28,10 @@ const HomeScreen = ({ navigation }) => {
 
     useEffect(()=>{
         try{
-            fetch ('https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=Ordinary_Drink')
+            fetch ( `https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=Ordinary_Drink`)
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data.drinks)
+                   // console.log(data.drinks)
                     setCoktailList(data.drinks);
                 })
                 .catch(error => {
@@ -39,8 +40,7 @@ const HomeScreen = ({ navigation }) => {
         }catch(e){
             console.error(e)
         }
-        console.log("coktailList",coktailList);
-        console.log("bool",Boolean(undefined))
+        //console.log("coktailList",coktailList);
     },[])
 
     useEffect(()=>{
@@ -54,7 +54,7 @@ const HomeScreen = ({ navigation }) => {
                    const regex = new RegExp('\w*'+searchText+'\w*','g')
                     return regex.test(str)//Object.values(e).includes(searchPhrase)
                 });
-                console.log("datas",datas);
+                //console.log("datas",datas);
                 setDataRendering(datas)
             }else {
                 datas = coktailList.slice(0, itemsPerPage);
@@ -62,7 +62,7 @@ const HomeScreen = ({ navigation }) => {
             }
         }
         datarendering();
-        console.log(dataRendering)
+       // console.log(dataRendering)
     },[itemsPerPage,searchPhrase,coktailList])
 
     const isFavorite = (item) => {
@@ -87,7 +87,7 @@ const HomeScreen = ({ navigation }) => {
                     <TouchableOpacity
                         onPress={() => {
 
-                            let index = favorites.findIndex((e)=>{return  e.idDrink == item.idDrink});
+                            let index = favorites.findIndex((e)=>{return  e.idDrink === item.idDrink});
 
                             if(index === -1){
                                 dispatch(createFavorite(item))
